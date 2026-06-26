@@ -76,11 +76,16 @@ export function CommunityScreen() {
       <View style={styles.header}>
         <LanguagePicker />
         <Text style={styles.headerTitle}>{t("community.title")}</Text>
+        <Text style={styles.headerSubtitle}>Network view and group requests</Text>
       </View>
 
       <View style={styles.content}>
         {!selected ? (
           <>
+            <View style={styles.card}>
+              <Text style={styles.label}>Communities</Text>
+              <Text style={styles.listItemSubtitle}>Tap a community to see the live network map.</Text>
+            </View>
             {communities.map((c) => (
               <Pressable
                 key={c.id}
@@ -134,26 +139,26 @@ export function CommunityScreen() {
             <Pressable testID="community-back" onPress={() => setSelected(null)}>
               <Text style={{ color: colors.primary, marginBottom: 12 }}>← Back</Text>
             </Pressable>
-            <Text testID="community-detail-name" style={styles.listItemTitle}>
-              {selected.name}
-            </Text>
+            <View style={styles.card}>
+              <Text testID="community-detail-name" style={styles.listItemTitle}>
+                {selected.name}
+              </Text>
+              <Text testID="community-member-list" style={styles.listItemSubtitle}>
+                {members.length} members in this network
+              </Text>
+            </View>
 
-            <CommunityNetworkMap
-              members={members}
-              onSelect={() => undefined}
-            />
+            <CommunityNetworkMap members={members} onSelect={() => undefined} />
 
-            <Text testID="community-member-list" style={[styles.label, { marginTop: 16 }]}>
-              Members: {members.map((m) => m.displayName).join(", ")}
-            </Text>
-
-            <Text style={[styles.label, { marginTop: 16 }]}>{t("community.newRequest")}</Text>
-            <TextInput testID="community-request-title" style={styles.input} placeholder={t("community.requestTitle")} value={requestTitle} onChangeText={setRequestTitle} />
-            <TextInput testID="community-request-amount" style={styles.input} placeholder={t("community.targetAmount")} value={targetAmount} onChangeText={setTargetAmount} keyboardType="decimal-pad" />
-            <TextInput style={styles.input} placeholder={t("community.expiry")} value={expiryDate} onChangeText={setExpiryDate} />
-            <Pressable testID="community-request-submit" style={styles.primaryButton} onPress={createRequest}>
-              <Text style={styles.primaryButtonText}>{t("community.newRequest")}</Text>
-            </Pressable>
+            <View style={styles.card}>
+              <Text style={styles.label}>{t("community.newRequest")}</Text>
+              <TextInput testID="community-request-title" style={styles.input} placeholder={t("community.requestTitle")} value={requestTitle} onChangeText={setRequestTitle} />
+              <TextInput testID="community-request-amount" style={styles.input} placeholder={t("community.targetAmount")} value={targetAmount} onChangeText={setTargetAmount} keyboardType="decimal-pad" />
+              <TextInput style={styles.input} placeholder={t("community.expiry")} value={expiryDate} onChangeText={setExpiryDate} />
+              <Pressable testID="community-request-submit" style={styles.primaryButton} onPress={createRequest}>
+                <Text style={styles.primaryButtonText}>{t("community.newRequest")}</Text>
+              </Pressable>
+            </View>
 
             {requests.map((r) => (
               <View key={r.id} testID={`community-request-${r.id}`} style={styles.card}>

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthRequest, requireAuth } from "../middleware/auth";
 import { store } from "../store";
 import { config } from "../config";
+import { resolveWhatsAppReply, sendWhatsAppText } from "../services/whatsapp";
 
 export const notificationsRouter = Router();
 
@@ -66,5 +67,18 @@ whatsappRouter.get("/webhook", (req, res) => {
 
 whatsappRouter.post("/webhook", (req, res) => {
   console.log("[whatsapp] webhook:", JSON.stringify(req.body, null, 2));
+
+  const value = req.body?.entry?.[0]?.changes?.[0]?.value;
+  const message = value?.messages?.[0];
+  const contact = value?.contacts?.[0];
+  const fromPhone = message?.from || contact?.wa_id;
+  const text = message?.text?.body ?? "";
+
+  if (text) {
+    resolveWhatsAppReply({ fromPhone, text })
+      .then((reply) => sendWhatsAppText(fromPhone ?? "", reply))
+      .catch((err) => console.log("[whatsapp] reply error", err));
+  }
+
   res.sendStatus(200);
 });

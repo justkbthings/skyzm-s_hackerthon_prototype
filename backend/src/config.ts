@@ -21,9 +21,10 @@ export const config = {
   mobileDeepLink: process.env.MOBILE_DEEP_LINK ?? "communityremit://payment",
 
   op: {
-    walletAddress: process.env.OP_WALLET_ADDRESS ?? "",
-    keyId: process.env.OP_KEY_ID ?? "",
-    privateKeyPath: process.env.OP_PRIVATE_KEY_PATH ?? "",
+    walletAddress: process.env.OPEN_PAYMENTS_WALLET_ADDRESS ?? process.env.OP_WALLET_ADDRESS ?? "",
+    keyId: process.env.OPEN_PAYMENTS_KEY_ID ?? process.env.OP_KEY_ID ?? "",
+    privateKeyPath:
+      process.env.OPEN_PAYMENTS_PRIVATE_KEY_PATH ?? process.env.OP_PRIVATE_KEY_PATH ?? "",
   },
 
   jwtSecret: process.env.JWT_SECRET ?? "hackathon-dev-secret",
@@ -35,7 +36,7 @@ export const config = {
   },
 
   whatsapp: {
-    token: optional("WHATSAPP_TOKEN"),
+    token: optional("WHATSAPP_ACCESS_TOKEN") ?? optional("WHATSAPP_TOKEN"),
     phoneNumberId: optional("WHATSAPP_PHONE_NUMBER_ID"),
     verifyToken: optional("WHATSAPP_VERIFY_TOKEN") ?? "community-remit-verify",
   },

@@ -3,17 +3,31 @@ import * as SecureStore from "expo-secure-store";
 
 const TOKEN_KEY = "community_remit_token";
 
+const browserStorage = globalThis as unknown as {
+  localStorage?: {
+    getItem(key: string): string | null;
+    setItem(key: string, value: string): void;
+    removeItem(key: string): void;
+  };
+};
+
 const webStorage = {
   getItem: async (key: string) =>
-    typeof localStorage !== "undefined" ? localStorage.getItem(key) : null,
+    browserStorage.localStorage?.getItem(key) ?? null,
   setItem: async (key: string, value: string) => {
-    if (typeof localStorage !== "undefined") localStorage.setItem(key, value);
+    browserStorage.localStorage?.setItem(key, value);
   },
   deleteItem: async (key: string) => {
-    if (typeof localStorage !== "undefined") localStorage.removeItem(key);
+    browserStorage.localStorage?.removeItem(key);
   },
 };
 
-export const tokenStorage = Platform.OS === "web" ? webStorage : SecureStore;
+const nativeStorage = {
+  getItem: SecureStore.getItemAsync,
+  setItem: SecureStore.setItemAsync,
+  deleteItem: SecureStore.deleteItemAsync,
+};
+
+export const tokenStorage = Platform.OS === "web" ? webStorage : nativeStorage;
 
 export { TOKEN_KEY };

@@ -1,4 +1,5 @@
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:3001";
+const API_URL =
+  process.env.EXPO_PUBLIC_API_URL ?? process.env.API_BASE_URL ?? "http://localhost:3001";
 
 let authToken: string | null = null;
 

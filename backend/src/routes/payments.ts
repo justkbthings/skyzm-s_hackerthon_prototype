@@ -10,8 +10,22 @@ import {
   buildPaymentInstructionMessage,
   sendWhatsAppText,
 } from "../services/whatsapp";
+import { createNotification } from "../services/notifications";
 
 export const paymentsRouter = Router();
+
+function buildMockQuote(amount: string) {
+  const sendValue = Number(amount);
+  const receiveValue = Math.round(sendValue * 14.25);
+  return {
+    sendAmount: { value: String(sendValue), assetCode: "ZAR", assetScale: 2 },
+    receiveAmount: { value: String(receiveValue), assetCode: "KES", assetScale: 2 },
+    debitAmount: { value: String(sendValue), assetCode: "ZAR", assetScale: 2 },
+    exchangeRate: "14.25",
+    fee: { value: "12", assetCode: "ZAR", assetScale: 2 },
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
+  };
+}
 
 paymentsRouter.get("/wallet-info", requireAuth, async (req, res, next) => {
   try {
@@ -35,10 +49,6 @@ paymentsRouter.get("/wallet-info", requireAuth, async (req, res, next) => {
 
 paymentsRouter.post("/quote", requireAuth, async (req: AuthRequest, res, next) => {
   try {
-    if (!isOpenPaymentsConfigured()) {
-      return res.status(503).json({ error: "Open Payments not configured" });
-    }
-
     const {
       receiverWalletAddress,
       amount,
@@ -49,6 +59,12 @@ paymentsRouter.post("/quote", requireAuth, async (req: AuthRequest, res, next) =
       description,
     } = req.body;
 
+    if (!receiverWalletAddress || !amount) {
+      return res.status(400).json({
+        error: "receiverWalletAddress and amount required",
+      });
+    }
+
     const senderWallet =
       config.op.walletAddress || req.user!.walletAddress;
     if (!senderWallet) {
@@ -57,10 +73,32 @@ paymentsRouter.post("/quote", requireAuth, async (req: AuthRequest, res, next) =
       });
     }
 
-    if (!receiverWalletAddress || !amount) {
-      return res.status(400).json({
-        error: "receiverWalletAddress and amount required",
+    if (!isOpenPaymentsConfigured()) {
+      const transactionId = crypto.randomUUID();
+      const now = new Date().toISOString();
+      await store.transactions.create({
+        id: transactionId,
+        userId: req.user!.id,
+        status: "PENDING",
+        paymentType: paymentMode === "RECURRING" ? "RECURRING" : "ONE_TIME",
+        direction: "sent",
+        senderWalletAddress: senderWallet,
+        receiverWalletAddress,
+        beneficiaryId,
+        beneficiaryName,
+        debitAmount: String(amount),
+        receiveAmount: String(Math.round(Number(amount) * 14.25)),
+        assetCode: req.user!.currency ?? "ZAR",
+        assetScale: 2,
+        receiveAssetCode: "KES",
+        receiveAssetScale: 2,
+        recurring: paymentMode === "RECURRING" ? recurring : undefined,
+        description,
+        createdAt: now,
+        updatedAt: now,
       });
+
+      return res.json({ transactionId, quote: buildMockQuote(String(amount)) });
     }
 
     const result = await createQuoteTransaction({
@@ -77,6 +115,202 @@ paymentsRouter.post("/quote", requireAuth, async (req: AuthRequest, res, next) =
     });
 
     res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+paymentsRouter.post("/send", requireAuth, async (req: AuthRequest, res, next) => {
+  try {
+    const {
+      receiverWalletAddress,
+      amount,
+      beneficiaryId,
+      beneficiaryName,
+      paymentMode,
+      recurring,
+      description,
+    } = req.body;
+
+    if (!receiverWalletAddress || !amount) {
+      return res.status(400).json({ error: "receiverWalletAddress and amount required" });
+    }
+
+    const senderWallet = config.op.walletAddress || req.user!.walletAddress;
+    if (!senderWallet) {
+      return res.status(400).json({ error: "Open Payments wallet not configured" });
+    }
+
+    if (!isOpenPaymentsConfigured()) {
+      const transactionId = crypto.randomUUID();
+      const now = new Date().toISOString();
+      await store.transactions.create({
+        id: transactionId,
+        userId: req.user!.id,
+        status: "COMPLETED",
+        paymentType: paymentMode === "RECURRING" ? "RECURRING" : "ONE_TIME",
+        direction: "sent",
+        senderWalletAddress: senderWallet,
+        receiverWalletAddress,
+        beneficiaryId,
+        beneficiaryName,
+        debitAmount: String(amount),
+        receiveAmount: String(Math.round(Number(amount) * 14.25)),
+        assetCode: req.user!.currency,
+        assetScale: 2,
+        receiveAssetCode: "KES",
+        receiveAssetScale: 2,
+        recurring,
+        description,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      return res.status(201).json({
+        transactionId,
+        quote: buildMockQuote(String(amount)),
+      });
+    }
+
+    const result = await createQuoteTransaction({
+      senderWalletAddress: senderWallet,
+      receiverWalletAddress,
+      amount: String(amount),
+      paymentType: "FIXED_SEND",
+      userId: req.user!.id,
+      beneficiaryId,
+      beneficiaryName,
+      description,
+      paymentTypeLabel: paymentMode === "RECURRING" ? "RECURRING" : "ONE_TIME",
+      recurring: paymentMode === "RECURRING" ? recurring : undefined,
+    });
+
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+paymentsRouter.post("/recurring", requireAuth, async (req: AuthRequest, res, next) => {
+  try {
+    const {
+      receiverWalletAddress,
+      amount,
+      beneficiaryId,
+      beneficiaryName,
+      interval,
+      startDate,
+      expiryDate,
+      description,
+    } = req.body;
+
+    if (!receiverWalletAddress || !amount || !interval || !startDate || !expiryDate) {
+      return res.status(400).json({
+        error: "receiverWalletAddress, amount, interval, startDate, expiryDate required",
+      });
+    }
+
+    const senderWallet = config.op.walletAddress || req.user!.walletAddress;
+    if (!senderWallet) {
+      return res.status(400).json({ error: "Open Payments wallet not configured" });
+    }
+
+    if (!isOpenPaymentsConfigured()) {
+      const transactionId = crypto.randomUUID();
+      const now = new Date().toISOString();
+      await store.transactions.create({
+        id: transactionId,
+        userId: req.user!.id,
+        status: "PENDING",
+        paymentType: "RECURRING",
+        direction: "sent",
+        senderWalletAddress: senderWallet,
+        receiverWalletAddress,
+        beneficiaryId,
+        beneficiaryName,
+        debitAmount: String(amount),
+        receiveAmount: String(Math.round(Number(amount) * 14.25)),
+        assetCode: req.user!.currency,
+        assetScale: 2,
+        receiveAssetCode: "KES",
+        receiveAssetScale: 2,
+        recurring: { interval, startDate, expiryDate, amount: String(amount) },
+        description,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+      return res.status(201).json({ transactionId, quote: buildMockQuote(String(amount)) });
+    }
+
+    const result = await createQuoteTransaction({
+      senderWalletAddress: senderWallet,
+      receiverWalletAddress,
+      amount: String(amount),
+      paymentType: "FIXED_SEND",
+      userId: req.user!.id,
+      beneficiaryId,
+      beneficiaryName,
+      description,
+      paymentTypeLabel: "RECURRING",
+      recurring: { interval, startDate, expiryDate, amount: String(amount) },
+    });
+
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+paymentsRouter.get("/history/:userId", requireAuth, async (req, res, next) => {
+  try {
+    const txs = await store.transactions.byUser(req.params.userId);
+    txs.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    res.json(txs);
+  } catch (err) {
+    next(err);
+  }
+});
+
+paymentsRouter.post("/request", requireAuth, async (req: AuthRequest, res, next) => {
+  try {
+    const { payerId, amount, currency, reason } = req.body;
+    if (!payerId || !amount || !currency) {
+      return res.status(400).json({ error: "payerId, amount, currency required" });
+    }
+
+    const now = new Date().toISOString();
+    const request = {
+      id: crypto.randomUUID(),
+      requesterId: req.user!.id,
+      payerId,
+      amount: Number(amount),
+      currency,
+      reason,
+      status: "PENDING" as const,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    await store.paymentRequests.create(request);
+    await createNotification({
+      userId: payerId,
+      title: "Payment request",
+      body: `${req.user!.displayName} requested ${currency} ${amount}${reason ? `: ${reason}` : ""}`,
+      type: "payment_request",
+      referenceId: request.id,
+    });
+
+    res.status(201).json(request);
+  } catch (err) {
+    next(err);
+  }
+});
+
+paymentsRouter.get("/requests/:userId", requireAuth, async (req, res, next) => {
+  try {
+    const requests = await store.paymentRequests.byUser(req.params.userId);
+    res.json(requests);
   } catch (err) {
     next(err);
   }

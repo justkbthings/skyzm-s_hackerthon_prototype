@@ -8,7 +8,7 @@ import { store } from "../store";
 
 export const authRouter = Router();
 
-authRouter.post("/signup", async (req, res, next) => {
+async function registerUser(req: any, res: any, next: any) {
   try {
     const { email, password, displayName, country, currency, phone, walletAddress } =
       req.body;
@@ -46,7 +46,11 @@ authRouter.post("/signup", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+}
+
+authRouter.post("/signup", registerUser);
+
+authRouter.post("/register", registerUser);
 
 authRouter.post("/login", async (req, res, next) => {
   try {

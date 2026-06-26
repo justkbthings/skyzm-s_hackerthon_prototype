@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import * as SecureStore from "expo-secure-store";
 import { useTheme } from "../context/ThemeContext";
 import { createStyles } from "../theme/styles";
 
@@ -15,6 +16,16 @@ export function LanguagePicker() {
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
+  useEffect(() => {
+    SecureStore.getItemAsync("openremit-language")
+      .then((stored) => {
+        if (stored && stored !== i18n.language) {
+          return i18n.changeLanguage(stored);
+        }
+      })
+      .catch(() => undefined);
+  }, [i18n]);
+
   return (
     <View style={styles.languageRow}>
       {LANGUAGES.map((lang) => {
@@ -23,7 +34,10 @@ export function LanguagePicker() {
           <Pressable
             key={lang.code}
             style={[styles.langChip, active && styles.langChipActive]}
-            onPress={() => i18n.changeLanguage(lang.code)}
+            onPress={async () => {
+              await i18n.changeLanguage(lang.code);
+              await SecureStore.setItemAsync("openremit-language", lang.code);
+            }}
           >
             <Text
               style={[styles.langChipText, active && styles.langChipTextActive]}

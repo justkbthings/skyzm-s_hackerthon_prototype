@@ -9,7 +9,7 @@ export function createStyles(colors: AppColors) {
     },
     header: {
       backgroundColor: colors.primary,
-      paddingHorizontal: 20,
+      paddingHorizontal: 24,
       paddingTop: 56,
       paddingBottom: 24,
       borderBottomLeftRadius: 24,
@@ -17,7 +17,7 @@ export function createStyles(colors: AppColors) {
     },
     headerTitle: {
       color: "#FFFFFF",
-      fontSize: 28,
+      fontSize: 30,
       fontWeight: "700",
     },
     headerSubtitle: {
@@ -27,18 +27,19 @@ export function createStyles(colors: AppColors) {
     },
     content: {
       flex: 1,
-      padding: 20,
+      paddingHorizontal: 24,
+      paddingVertical: 20,
     },
     card: {
       backgroundColor: colors.surface,
       borderRadius: 16,
-      padding: 20,
+      padding: 16,
       marginBottom: 16,
-      shadowColor: "#000",
+      shadowColor: colors.primary,
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.06,
-      shadowRadius: 8,
-      elevation: 2,
+      shadowOpacity: 0.08,
+      shadowRadius: 12,
+      elevation: 3,
     },
     balanceLabel: {
       color: colors.textMuted,
@@ -47,7 +48,7 @@ export function createStyles(colors: AppColors) {
     },
     balanceAmount: {
       color: colors.primary,
-      fontSize: 36,
+      fontSize: 40,
       fontWeight: "800",
     },
     actionGrid: {
@@ -60,7 +61,7 @@ export function createStyles(colors: AppColors) {
       width: "47%",
       backgroundColor: colors.surface,
       borderRadius: 16,
-      padding: 20,
+      padding: 16,
       alignItems: "center",
       borderWidth: 1,
       borderColor: colors.secondary,
@@ -77,7 +78,8 @@ export function createStyles(colors: AppColors) {
     },
     primaryButton: {
       backgroundColor: colors.accent,
-      borderRadius: 14,
+      borderRadius: 16,
+      minHeight: 56,
       paddingVertical: 16,
       alignItems: "center",
       marginTop: 8,
@@ -89,7 +91,8 @@ export function createStyles(colors: AppColors) {
     },
     secondaryButton: {
       backgroundColor: colors.secondary,
-      borderRadius: 14,
+      borderRadius: 16,
+      minHeight: 56,
       paddingVertical: 16,
       alignItems: "center",
       marginTop: 8,
@@ -102,10 +105,10 @@ export function createStyles(colors: AppColors) {
     input: {
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: "#D1D5DB",
-      borderRadius: 12,
+      borderColor: "#CBD5E1",
+      borderRadius: 16,
       paddingHorizontal: 16,
-      paddingVertical: 14,
+      minHeight: 52,
       fontSize: 16,
       color: colors.text,
       marginBottom: 12,
@@ -118,7 +121,7 @@ export function createStyles(colors: AppColors) {
     },
     listItem: {
       backgroundColor: colors.surface,
-      borderRadius: 12,
+      borderRadius: 16,
       padding: 16,
       marginBottom: 10,
       flexDirection: "row",
@@ -145,7 +148,9 @@ export function createStyles(colors: AppColors) {
       paddingHorizontal: 10,
       paddingVertical: 4,
       borderRadius: 12,
-      backgroundColor: "rgba(255,255,255,0.2)",
+      backgroundColor: "rgba(255,255,255,0.16)",
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.2)",
     },
     langChipActive: {
       backgroundColor: "#FFFFFF",

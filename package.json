@@ -4,7 +4,8 @@
   "private": true,
   "description": "Cross-border remittance app built on Open Payments & Interledger",
   "devDependencies": {
-    "@playwright/test": "^1.49.1"
+    "@playwright/test": "^1.49.1",
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "dev": "npm run dev --workspace=backend",

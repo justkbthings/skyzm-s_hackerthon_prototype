@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
 import { createStyles } from "../theme/styles";
-import { api } from "../services/api";
+import { api, formatMoney } from "../services/api";
 import { RootStackParamList } from "../navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
@@ -18,12 +18,14 @@ export function HomeScreen({ navigation }: Props) {
   const styles = createStyles(colors);
   const [balance, setBalance] = useState(user?.balance ?? 0);
   const [currency, setCurrency] = useState(user?.currency ?? "ZAR");
+  const [recent, setRecent] = useState<Awaited<ReturnType<typeof api.history>>>([]);
 
   useEffect(() => {
     api.balance().then((b) => {
       setBalance(b.balance);
       setCurrency(b.currency);
     });
+    api.history().then((items) => setRecent(items.slice(0, 3))).catch(() => setRecent([]));
     refreshUser();
   }, [refreshUser]);
 
@@ -53,7 +55,10 @@ export function HomeScreen({ navigation }: Props) {
         <View style={styles.card}>
           <Text style={styles.balanceLabel}>{t("common.balance")}</Text>
           <Text testID="home-balance" style={styles.balanceAmount}>
-            {currency} {balance.toLocaleString()}
+            {formatMoney(balance, currency)}
+          </Text>
+          <Text style={styles.listItemSubtitle}>
+            {user?.displayName} · {currency}
           </Text>
         </View>
 
@@ -70,6 +75,24 @@ export function HomeScreen({ navigation }: Props) {
             </Pressable>
           ))}
         </View>
+
+        <Text style={[styles.label, { marginTop: 12 }]}>{t("history.title")}</Text>
+        {recent.length === 0 ? (
+          <View style={styles.card}>
+            <Text style={styles.listItemSubtitle}>{t("history.empty")}</Text>
+          </View>
+        ) : (
+          recent.map((tx) => (
+            <View key={tx.id} style={styles.card}>
+              <Text style={styles.listItemTitle}>
+                {tx.direction} · {tx.status}
+              </Text>
+              <Text style={styles.listItemSubtitle}>
+                {tx.assetCode} {tx.debitAmount ?? tx.receiveAmount} · {new Date(tx.createdAt).toLocaleDateString()}
+              </Text>
+            </View>
+          ))
+        )}
       </View>
     </ScrollView>
   );

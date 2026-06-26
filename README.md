@@ -42,6 +42,24 @@ cd mobile && cp .env.example .env && npx expo start
 
 Demo login: `nomzamo@example.com` / `password123`
 
+### Demo Credentials
+
+| Name | Email | Password | Country | Currency |
+|------|-------|----------|---------|----------|
+| Nomzamo | nomzamo@example.com | password123 | South Africa | ZAR |
+| Mother | mother@example.com | password123 | South Africa | ZAR |
+| Jane | jane@example.com | password123 | England | GBP |
+| Kamau | kamau@example.com | password123 | Kenya | KES |
+| Thabo | thabo@example.com | password123 | South Africa | ZAR |
+
+### Demo Flow
+
+1. Log in as Nomzamo.
+2. Open Deposit and complete a simulated deposit.
+3. Open Home and verify the refreshed balance.
+4. Open Community to view the network map.
+5. Use Payments or WhatsApp routes to show the remittance flow.
+
 ## Project Structure
 
 ```

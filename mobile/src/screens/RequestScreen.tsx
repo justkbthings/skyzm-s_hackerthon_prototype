@@ -44,24 +44,26 @@ export function RequestScreen() {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.label}>{t("request.selectPayer")}</Text>
-        {users.map((u) => (
-          <Pressable key={u.id} style={styles.listItem} onPress={() => setPayerId(u.id)}>
-            <Text style={styles.listItemTitle}>
-              {payerId === u.id ? "● " : "○ "}
-              {u.displayName}
-            </Text>
+        <View style={styles.card}>
+          <Text style={styles.label}>{t("request.selectPayer")}</Text>
+          {users.map((u) => (
+            <Pressable key={u.id} style={styles.listItem} onPress={() => setPayerId(u.id)}>
+              <Text style={styles.listItemTitle}>
+                {payerId === u.id ? "● " : "○ "}
+                {u.displayName}
+              </Text>
+            </Pressable>
+          ))}
+
+          <TextInput style={styles.input} placeholder={t("common.amount")} value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
+          <TextInput style={styles.input} placeholder={t("common.reason")} value={reason} onChangeText={setReason} />
+
+          <Pressable style={styles.primaryButton} onPress={sendRequest}>
+            <Text style={styles.primaryButtonText}>{t("request.sendRequest")}</Text>
           </Pressable>
-        ))}
+        </View>
 
-        <TextInput style={styles.input} placeholder={t("common.amount")} value={amount} onChangeText={setAmount} keyboardType="decimal-pad" />
-        <TextInput style={styles.input} placeholder={t("common.reason")} value={reason} onChangeText={setReason} />
-
-        <Pressable style={styles.primaryButton} onPress={sendRequest}>
-          <Text style={styles.primaryButtonText}>{t("request.sendRequest")}</Text>
-        </Pressable>
-
-        <Text style={[styles.label, { marginTop: 24 }]}>Incoming requests</Text>
+        <Text style={[styles.label, { marginTop: 8 }]}>Incoming requests</Text>
         {incoming.map((r) => (
           <View key={r.id} style={styles.card}>
             <Text style={styles.listItemTitle}>

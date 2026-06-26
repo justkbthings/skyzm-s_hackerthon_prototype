@@ -34,6 +34,7 @@ app.use("/api/payments", paymentsRouter);
 app.use("/api/callback", callbackRouter);
 app.use("/api/requests", requestsRouter);
 app.use("/api/communities", communitiesRouter);
+app.use("/api/community", communitiesRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/whatsapp", whatsappRouter);
