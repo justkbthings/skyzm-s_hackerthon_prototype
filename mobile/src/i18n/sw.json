@@ -1,0 +1,90 @@
+{
+  "common": {
+    "appName": "Community Remit",
+    "balance": "Salio linalopatikana",
+    "continue": "Endelea",
+    "send": "Tuma",
+    "cancel": "Ghairi",
+    "amount": "Kiasi",
+    "reason": "Sababu (hiari)",
+    "selectCountry": "Chagua nchi",
+    "selectProvider": "Chagua benki au mtoa huduma",
+    "loading": "Inapakia...",
+    "success": "Imefanikiwa",
+    "error": "Kuna tatizo limetokea"
+  },
+  "home": {
+    "greeting": "Habari, {{name}}",
+    "subtitle": "Tuma msaada kuvuka mipaka",
+    "deposit": "Weka pesa",
+    "pay": "Fanya malipo",
+    "request": "Omba malipo",
+    "community": "Jamii",
+    "withdraw": "Toa pesa",
+    "history": "Historia ya miamala"
+  },
+  "payment": {
+    "title": "Tuma malipo",
+    "beneficiaries": "Wapokeaji wako",
+    "addBeneficiary": "Ongeza mpokeaji",
+    "name": "Jina",
+    "walletAddress": "Anwani ya pochi ya Interledger",
+    "oneTime": "Malipo ya mara moja",
+    "recurring": "Malipo ya mara kwa mara",
+    "startDate": "Tarehe ya kuanza",
+    "expiryDate": "Tarehe ya mwisho",
+    "interval": "Muda wa kurudia",
+    "quote": "Bei yako",
+    "youSend": "Unatuma",
+    "theyReceive": "Wanapokea",
+    "authorize": "Idhinisha malipo",
+    "whatsapp": "Tuma kupitia WhatsApp"
+  },
+  "deposit": {
+    "title": "Weka pesa",
+    "subtitle": "Ongeza pesa kwenye pochi yako",
+    "complete": "Kamilisha uwekaji"
+  },
+  "withdraw": {
+    "title": "Toa pesa",
+    "subtitle": "Hamisha pesa kwenye benki yako",
+    "complete": "Kamilisha uondoaji"
+  },
+  "request": {
+    "title": "Omba malipo",
+    "subtitle": "Muombe mtu akutumie pesa",
+    "selectPayer": "Chagua anayelipa",
+    "sendRequest": "Tuma ombi"
+  },
+  "community": {
+    "title": "Jamii zako",
+    "create": "Unda jamii",
+    "communityName": "Jina la jamii",
+    "joinRequests": "Maombi ya kujiunga",
+    "approve": "Kubali",
+    "deny": "Kataa",
+    "newRequest": "Ombi jipya la jamii",
+    "requestTitle": "Unahitaji nini?",
+    "targetAmount": "Kiasi kinachohitajika",
+    "expiry": "Tarehe ya mwisho",
+    "contribute": "Changia",
+    "raised": "Imekusanywa {{raised}} kati ya {{target}}"
+  },
+  "history": {
+    "title": "Historia ya miamala",
+    "empty": "Hakuna miamala bado"
+  },
+  "auth": {
+    "login": "Ingia",
+    "signup": "Fungua akaunti",
+    "email": "Barua pepe",
+    "password": "Nenosiri",
+    "displayName": "Jina lako"
+  },
+  "countries": {
+    "ZA": "Afrika Kusini",
+    "KE": "Kenya",
+    "GB": "Uingereza",
+    "US": "Marekani"
+  }
+}

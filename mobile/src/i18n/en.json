@@ -1,0 +1,90 @@
+{
+  "common": {
+    "appName": "Community Remit",
+    "balance": "Available balance",
+    "continue": "Continue",
+    "send": "Send",
+    "cancel": "Cancel",
+    "amount": "Amount",
+    "reason": "Reason (optional)",
+    "selectCountry": "Select country",
+    "selectProvider": "Select bank or provider",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Something went wrong"
+  },
+  "home": {
+    "greeting": "Hello, {{name}}",
+    "subtitle": "Send support across borders",
+    "deposit": "Deposit",
+    "pay": "Make payment",
+    "request": "Request payment",
+    "community": "Community",
+    "withdraw": "Withdraw",
+    "history": "Transaction history"
+  },
+  "payment": {
+    "title": "Send payment",
+    "beneficiaries": "Your beneficiaries",
+    "addBeneficiary": "Add beneficiary",
+    "name": "Name",
+    "walletAddress": "Interledger wallet address",
+    "oneTime": "One-time payment",
+    "recurring": "Recurring payment",
+    "startDate": "Start date (YYYY-MM-DD)",
+    "expiryDate": "Expiry date (YYYY-MM-DD)",
+    "interval": "Interval (e.g. P1M for monthly)",
+    "quote": "Your quote",
+    "youSend": "You send",
+    "theyReceive": "They receive",
+    "authorize": "Authorize payment",
+    "whatsapp": "Send via WhatsApp"
+  },
+  "deposit": {
+    "title": "Deposit",
+    "subtitle": "Add money to your wallet",
+    "complete": "Complete deposit"
+  },
+  "withdraw": {
+    "title": "Withdraw",
+    "subtitle": "Move money to your bank",
+    "complete": "Complete withdrawal"
+  },
+  "request": {
+    "title": "Request payment",
+    "subtitle": "Ask someone to send you money",
+    "selectPayer": "Select who should pay",
+    "sendRequest": "Send request"
+  },
+  "community": {
+    "title": "Your communities",
+    "create": "Create community",
+    "communityName": "Community name",
+    "joinRequests": "Pending join requests",
+    "approve": "Approve",
+    "deny": "Deny",
+    "newRequest": "New community request",
+    "requestTitle": "What do you need?",
+    "targetAmount": "Target amount",
+    "expiry": "Expiry date",
+    "contribute": "Contribute",
+    "raised": "Raised {{raised}} of {{target}}"
+  },
+  "history": {
+    "title": "Transaction history",
+    "empty": "No transactions yet"
+  },
+  "auth": {
+    "login": "Sign in",
+    "signup": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Your name"
+  },
+  "countries": {
+    "ZA": "South Africa",
+    "KE": "Kenya",
+    "GB": "England",
+    "US": "United States"
+  }
+}

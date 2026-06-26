@@ -1,0 +1,23 @@
+{
+  "name": "community-remit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cross-border remittance app built on Open Payments & Interledger",
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  },
+  "scripts": {
+    "dev": "npm run dev --workspace=backend",
+    "dev:mobile": "npm run start --workspace=mobile",
+    "dev:mobile:web": "npm run web --workspace=mobile",
+    "install:all": "npm install && npm install --workspace=backend && npm install --workspace=mobile",
+    "test:api": "bash scripts/test-api.sh",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
+  },
+  "workspaces": [
+    "backend",
+    "mobile"
+  ]
+}

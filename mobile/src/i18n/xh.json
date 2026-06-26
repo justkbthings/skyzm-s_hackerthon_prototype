@@ -1,0 +1,90 @@
+{
+  "common": {
+    "appName": "Community Remit",
+    "balance": "Ibhalansi ekhoyo",
+    "continue": "Qhubeka",
+    "send": "Thumela",
+    "cancel": "Rhoxisa",
+    "amount": "Isixa",
+    "reason": "Isizathu (ukhetho)",
+    "selectCountry": "Khetha ilizwe",
+    "selectProvider": "Khetha ibhanki okanye umnikezeli",
+    "loading": "Iyalayisha...",
+    "success": "Impumelelo",
+    "error": "Kukho into engahambanga kakuhle"
+  },
+  "home": {
+    "greeting": "Molo, {{name}}",
+    "subtitle": "Thumela inkxaso ngaphesheya kwemida",
+    "deposit": "Faka imali",
+    "pay": "Yenza intlawulo",
+    "request": "Cela intlawulo",
+    "community": "Uluntu",
+    "withdraw": "Rhoxisa imali",
+    "history": "Imbali yeentlawulo"
+  },
+  "payment": {
+    "title": "Thumela intlawulo",
+    "beneficiaries": "Abamkeli bakho",
+    "addBeneficiary": "Yongeza umkeli",
+    "name": "Igama",
+    "walletAddress": "Idilesi ye-wallet ye-Interledger",
+    "oneTime": "Intlawulo yesikhathi esinye",
+    "recurring": "Intlawulo ephindaphindayo",
+    "startDate": "Umhla wokuqala",
+    "expiryDate": "Umhla wokuphela",
+    "interval": "Ixesha phakathi",
+    "quote": "Ixabiso lakho",
+    "youSend": "Uthumela",
+    "theyReceive": "Bayifumana",
+    "authorize": "Gunyazisa intlawulo",
+    "whatsapp": "Thumela nge-WhatsApp"
+  },
+  "deposit": {
+    "title": "Faka imali",
+    "subtitle": "Yongeza imali kwi-wallet yakho",
+    "complete": "Gqiba ukufaka"
+  },
+  "withdraw": {
+    "title": "Rhoxisa imali",
+    "subtitle": "Thumela imali kwibhanki yakho",
+    "complete": "Gqiba ukurhoxisa"
+  },
+  "request": {
+    "title": "Cela intlawulo",
+    "subtitle": "Cela umntu akuthumelele imali",
+    "selectPayer": "Khetha umntu oza kuhlawula",
+    "sendRequest": "Thumela isicelo"
+  },
+  "community": {
+    "title": "Imimandla yakho",
+    "create": "Yenza uluntu",
+    "communityName": "Igama loluntu",
+    "joinRequests": "Izicelo zokungena",
+    "approve": "Vuma",
+    "deny": "Yala",
+    "newRequest": "Isicelo soluntu esitsha",
+    "requestTitle": "Yintoni oyifunayo?",
+    "targetAmount": "Isixa esijoliswe kuso",
+    "expiry": "Umhla wokuphela",
+    "contribute": "Nikela",
+    "raised": "Iqokelelwe {{raised}} kwi-{{target}}"
+  },
+  "history": {
+    "title": "Imbali yeentlawulo",
+    "empty": "Akukho ntlawulo okwangoku"
+  },
+  "auth": {
+    "login": "Ngena",
+    "signup": "Yenza i-akhawunti",
+    "email": "I-imeyile",
+    "password": "Iphasiwedi",
+    "displayName": "Igama lakho"
+  },
+  "countries": {
+    "ZA": "Mzantsi Afrika",
+    "KE": "Kenya",
+    "GB": "England",
+    "US": "United States"
+  }
+}

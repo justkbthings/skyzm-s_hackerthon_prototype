@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Community Remit",
+    "slug": "community-remit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "communityremit",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#004B49"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.communityremit.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#004B49"
+      },
+      "package": "com.communityremit.app"
+    }
+  }
+}
