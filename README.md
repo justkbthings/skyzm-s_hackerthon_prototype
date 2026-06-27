@@ -1,4 +1,4 @@
-# Community Remit
+# THUMELA
 
 Cross-border remittance for connected communities — built on **Open Payments** and the **Interledger Protocol**.
 

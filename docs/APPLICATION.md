@@ -1,4 +1,4 @@
-# Community Remit — Application Documentation
+# THUMELA — Application Documentation
 
 ## Problem Statement
 
@@ -6,7 +6,7 @@ People making cross-border payments in third-world countries fall victim to high
 
 ## Mission
 
-At its core, Community Remit is a cross-currency remittance app. Where we shine:
+At its core, THUMELA is a cross-currency remittance app. Where we shine:
 
 - **Interledger Protocol** makes a R5 conversion as accessible as a R10,000 conversion — no punitive minimums.
 - **Community features** reconnect people and their money — support stays tangible even when someone is 9,000 km away and sending their last R200.
@@ -39,22 +39,15 @@ At its core, Community Remit is a cross-currency remittance app. Where we shine:
 | 3.2 | Recurring payment | GNAP grant `limits.interval` + recurring metadata |
 | 4 | WhatsApp payment instructions | `POST /api/payments/whatsapp-instruction` |
 | 5 | Receive in local currency | Receiver wallet resolved via Open Payments; quote shows receive amount |
-| 6 | Request payment from user | `POST /api/requests` + push/in-app notification |
-| 7 | Community requests | Shared pot; members contribute any amount |
-| 8 | Transaction history | `GET /api/transactions/history` |
-
 ---
-
 ## Application Pages
 
 ### 1. Home
 - Wallet balance (local currency)
 - Quick actions: Deposit, Pay, Request, Community, Withdraw, History
-- Language picker (EN / XH / SW) on every page header
-
-### 2. Payment
 Flow:
 1. Select beneficiary (saved name + Interledger wallet address)
+**Interledger Protocol (ILP)** connects payment networks through standardized connectors. **Open Payments** is the API layer that lets third-party apps (like THUMELA) instruct Account Servicing Entities without holding funds.
 2. Choose one-time or recurring (start, expiry, interval)
 3. Generate quote via Open Payments
 4. Authorize at wallet (GNAP redirect) or send WhatsApp instruction
@@ -62,6 +55,7 @@ Flow:
 ### 3. Deposit (POC)
 1. Select country (ZA, KE, GB, US)
 2. See country-specific providers (FNB, M-Pesa, HSBC, etc.)
+| Traditional | THUMELA + ILP |
 3. Enter amount → simulated deposit credits wallet
 
 ### 4. Request Payment
@@ -125,9 +119,9 @@ Traditional remittance rails:
 - FX spreads are opaque and often unfavourable on small amounts
 - Minimum transfer thresholds exclude micro-payments (e.g. R5 for airtime)
 
-**Interledger Protocol (ILP)** connects payment networks through standardized connectors. **Open Payments** is the API layer that lets third-party apps (like Community Remit) instruct Account Servicing Entities without holding funds.
+**Interledger Protocol (ILP)** connects payment networks through standardized connectors. **Open Payments** is the API layer that lets third-party apps (like THUMELA) instruct Account Servicing Entities without holding funds.
 
-| Traditional | Community Remit + ILP |
+| Traditional | THUMELA + ILP |
 |-------------|----------------------|
 | High minimums | Any amount — R5 same as R10,000 |
 | Opaque FX | Quote shows exact debit/receive before send |
