@@ -15,6 +15,16 @@ export function createStyles(colors: AppColors) {
       borderBottomLeftRadius: 24,
       borderBottomRightRadius: 24,
     },
+    headerRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      justifyContent: "space-between",
+      gap: 12,
+      marginBottom: 12,
+    },
+    headerStack: {
+      flex: 1,
+    },
     headerTitle: {
       color: "#FFFFFF",
       fontSize: 30,
@@ -166,6 +176,78 @@ export function createStyles(colors: AppColors) {
     errorText: {
       color: colors.danger,
       marginBottom: 8,
+    },
+    currencyBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      gap: 6,
+      alignSelf: "flex-start",
+    },
+    flagText: {
+      fontSize: 20,
+    },
+    currencyCode: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: colors.primary,
+    },
+    tabContent: {
+      flex: 1,
+      paddingHorizontal: 24,
+      paddingVertical: 20,
+    },
+    tabCard: {
+      backgroundColor: colors.surface,
+      borderRadius: 20,
+      padding: 16,
+      marginBottom: 16,
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 12,
+      elevation: 3,
+    },
+    tabPill: {
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 999,
+      backgroundColor: colors.secondary,
+      alignSelf: "flex-start",
+    },
+    tabPillText: {
+      color: colors.primary,
+      fontSize: 12,
+      fontWeight: "700",
+      letterSpacing: 0.2,
+    },
+    sectionToggleRow: {
+      flexDirection: "row",
+      gap: 10,
+      marginBottom: 16,
+    },
+    sectionToggle: {
+      flex: 1,
+      borderRadius: 16,
+      paddingVertical: 12,
+      alignItems: "center",
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    sectionToggleActive: {
+      backgroundColor: colors.secondary,
+      borderColor: colors.accent,
+    },
+    sectionToggleText: {
+      color: colors.textMuted,
+      fontWeight: "700",
+    },
+    sectionToggleTextActive: {
+      color: colors.primary,
     },
   });
 }

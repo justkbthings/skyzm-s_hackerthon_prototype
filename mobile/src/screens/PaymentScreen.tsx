@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Pressable,
@@ -10,6 +10,7 @@ import {
 import { useTranslation } from "react-i18next";
 import * as WebBrowser from "expo-web-browser";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
 import { createStyles } from "../theme/styles";
@@ -18,8 +19,9 @@ import { RootStackParamList } from "../navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Payment">;
 
-export function PaymentScreen({ navigation }: Props) {
+export function PaymentScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
@@ -37,9 +39,25 @@ export function PaymentScreen({ navigation }: Props) {
   const [newWallet, setNewWallet] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    if (!route.params) return;
+    if (route.params.amount != null) {
+      setAmount(String(route.params.amount));
+    }
+  }, [route.params]);
+
   React.useEffect(() => {
     api.beneficiaries.list().then(setBeneficiaries).catch(() => setBeneficiaries([]));
   }, []);
+
+  useEffect(() => {
+    if (!route.params?.beneficiaryId) return;
+    const match = beneficiaries.find((item) => item.id === route.params?.beneficiaryId || item.name === route.params?.beneficiaryName);
+    if (match) {
+      setSelected(match);
+      setStep("type");
+    }
+  }, [beneficiaries, route.params]);
 
   const addBeneficiary = async () => {
     try {
@@ -106,6 +124,9 @@ export function PaymentScreen({ navigation }: Props) {
       <View style={styles.header}>
         <LanguagePicker />
         <Text style={styles.headerTitle}>{t("payment.title")}</Text>
+        <Text style={styles.headerSubtitle}>
+          You are sending from your {user?.accountCurrency ?? user?.currency ?? "ZAR"} wallet.
+        </Text>
       </View>
 
       <View style={styles.content}>

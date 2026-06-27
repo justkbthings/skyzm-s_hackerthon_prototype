@@ -8,7 +8,7 @@ import { createStyles } from "../theme/styles";
 import { api, Transaction } from "../services/api";
 import { RootStackParamList } from "../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParamList, "History">;
+type Props = NativeStackScreenProps<RootStackParamList, "Activity">;
 
 export function HistoryScreen() {
   const { t } = useTranslation();

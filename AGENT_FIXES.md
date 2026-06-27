@@ -12,3 +12,9 @@
 - Polished login, home, request, and community screens with card-based layouts and better spacing.
 - Verified the live Expo web preview: login succeeded, home rendered, deposit route opened, and a simulated deposit completed.
 - Updated the README with demo credentials and a short investor-facing walkthrough.
+- Added a persistent bottom tab shell with Home, Payments, Community, Activity, and Profile.
+- Added a currency badge for the account currency/flag and routed modal flows through the parent stack.
+- Added Activity and Profile screens, plus a Payments dashboard tab.
+- Verified the live preview: Home, Payments, Activity, Profile, and the send modal all render correctly.
+- Made the Deposit screen auto-close back to the main shell after a successful deposit.
+- Fixed web-safe language persistence so the preview no longer crashes when switching languages.

@@ -5,6 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
+import { CurrencyBadge } from "../components/CurrencyBadge";
 import { createStyles } from "../theme/styles";
 import { api, formatMoney } from "../services/api";
 import { RootStackParamList } from "../navigation/types";
@@ -20,6 +21,12 @@ export function HomeScreen({ navigation }: Props) {
   const [currency, setCurrency] = useState(user?.currency ?? "ZAR");
   const [recent, setRecent] = useState<Awaited<ReturnType<typeof api.history>>>([]);
 
+  const parentNavigation = navigation.getParent();
+
+  const openModal = (route: "Payment" | "Deposit" | "Withdraw" | "Request") => {
+    parentNavigation?.navigate(route as never);
+  };
+
   useEffect(() => {
     api.balance().then((b) => {
       setBalance(b.balance);
@@ -30,25 +37,32 @@ export function HomeScreen({ navigation }: Props) {
   }, [refreshUser]);
 
   const actions = [
-    { key: "Deposit", label: t("home.deposit"), icon: "↓", screen: "Deposit" as const },
-    { key: "Payment", label: t("home.pay"), icon: "→", screen: "Payment" as const },
-    { key: "Request", label: t("home.request"), icon: "?", screen: "Request" as const },
-    { key: "Community", label: t("home.community"), icon: "◎", screen: "Community" as const },
-    { key: "Withdraw", label: t("home.withdraw"), icon: "↑", screen: "Withdraw" as const },
-    { key: "History", label: t("home.history"), icon: "≡", screen: "History" as const },
+    { key: "Deposit", label: t("home.deposit"), icon: "↓", onPress: () => openModal("Deposit") },
+    { key: "Payment", label: t("home.pay"), icon: "→", onPress: () => openModal("Payment") },
+    { key: "Request", label: t("home.request"), icon: "?", onPress: () => openModal("Request") },
+    { key: "Community", label: t("home.community"), icon: "◎", onPress: () => navigation.navigate("Community" as never) },
+    { key: "Withdraw", label: t("home.withdraw"), icon: "↑", onPress: () => openModal("Withdraw") },
+    { key: "History", label: t("home.history"), icon: "≡", onPress: () => navigation.navigate("Activity" as never) },
   ];
 
   return (
     <ScrollView testID="home-screen" style={styles.screen}>
       <View style={styles.header}>
-        <LanguagePicker />
-        <Pressable testID="logout-button" onPress={logout} style={{ alignSelf: "flex-end" }}>
-          <Text style={{ color: "#fff", marginBottom: 8 }}>Logout</Text>
+        <View style={styles.headerRow}>
+          {user ? (
+            <CurrencyBadge user={user} onPress={() => navigation.navigate("Profile" as never)} />
+          ) : null}
+          <LanguagePicker />
+        </View>
+        <View style={styles.headerStack}>
+          <Text testID="home-greeting" style={styles.headerTitle}>
+            {t("home.greeting", { name: user?.displayName ?? "" })}
+          </Text>
+          <Text style={styles.headerSubtitle}>{t("home.subtitle")}</Text>
+        </View>
+        <Pressable testID="logout-button" onPress={logout} style={{ alignSelf: "flex-end", marginTop: 8 }}>
+          <Text style={{ color: "#fff" }}>Logout</Text>
         </Pressable>
-        <Text testID="home-greeting" style={styles.headerTitle}>
-          {t("home.greeting", { name: user?.displayName ?? "" })}
-        </Text>
-        <Text style={styles.headerSubtitle}>{t("home.subtitle")}</Text>
       </View>
 
       <View style={styles.content}>
@@ -68,7 +82,7 @@ export function HomeScreen({ navigation }: Props) {
               key={action.key}
               testID={`home-action-${action.key.toLowerCase()}`}
               style={styles.actionButton}
-              onPress={() => navigation.navigate(action.screen)}
+              onPress={action.onPress}
             >
               <Text style={styles.actionIcon}>{action.icon}</Text>
               <Text style={styles.actionLabel}>{action.label}</Text>

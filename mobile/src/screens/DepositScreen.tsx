@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -13,7 +13,7 @@ const COUNTRIES = ["ZA", "KE", "GB", "US"] as const;
 
 type Props = NativeStackScreenProps<RootStackParamList, "Deposit">;
 
-export function DepositScreen() {
+export function DepositScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { colors } = useTheme();
@@ -24,6 +24,13 @@ export function DepositScreen() {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     api.providers(country).then((res) => {
@@ -36,6 +43,15 @@ export function DepositScreen() {
     if (!selectedProvider || !amount) return;
     const res = await api.deposit(Number(amount), selectedProvider, country);
     setMessage(res.message);
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+        return;
+      }
+
+      navigation.navigate("MainTabs" as never);
+    }, 900);
   };
 
   return (

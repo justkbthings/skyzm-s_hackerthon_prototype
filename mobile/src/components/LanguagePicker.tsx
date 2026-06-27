@@ -1,9 +1,35 @@
 import React, { useEffect } from "react";
+import { Platform } from "react-native";
 import { Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import * as SecureStore from "expo-secure-store";
 import { useTheme } from "../context/ThemeContext";
 import { createStyles } from "../theme/styles";
+
+const browserStorage = globalThis as unknown as {
+  localStorage?: {
+    getItem(key: string): string | null;
+    setItem(key: string, value: string): void;
+  };
+};
+
+const languageStorage = {
+  getItem: async (key: string) => {
+    if (Platform.OS === "web") {
+      return browserStorage.localStorage?.getItem(key) ?? null;
+    }
+
+    return SecureStore.getItemAsync(key);
+  },
+  setItem: async (key: string, value: string) => {
+    if (Platform.OS === "web") {
+      browserStorage.localStorage?.setItem(key, value);
+      return;
+    }
+
+    await SecureStore.setItemAsync(key, value);
+  },
+};
 
 const LANGUAGES = [
   { code: "en", label: "EN" },
@@ -17,7 +43,7 @@ export function LanguagePicker() {
   const styles = createStyles(colors);
 
   useEffect(() => {
-    SecureStore.getItemAsync("openremit-language")
+    languageStorage.getItem("openremit-language")
       .then((stored) => {
         if (stored && stored !== i18n.language) {
           return i18n.changeLanguage(stored);
@@ -36,7 +62,7 @@ export function LanguagePicker() {
             style={[styles.langChip, active && styles.langChipActive]}
             onPress={async () => {
               await i18n.changeLanguage(lang.code);
-              await SecureStore.setItemAsync("openremit-language", lang.code);
+              await languageStorage.setItem("openremit-language", lang.code);
             }}
           >
             <Text

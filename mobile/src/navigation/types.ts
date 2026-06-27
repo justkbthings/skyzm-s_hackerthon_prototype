@@ -1,11 +1,28 @@
 export type RootStackParamList = {
   Login: undefined;
+  MainTabs: undefined;
   Home: undefined;
-  Payment: undefined;
+  Payments: undefined;
+  Community: undefined;
+  Activity: undefined;
+  Profile: undefined;
+  Payment:
+    | {
+        beneficiaryId?: string;
+        beneficiaryName?: string;
+        amount?: number;
+      }
+    | undefined;
   Deposit: undefined;
   Withdraw: undefined;
   Request: undefined;
-  Community: undefined;
-  History: undefined;
   PaymentStatus: { transactionId: string };
+};
+
+export type MainTabParamList = {
+  Home: undefined;
+  Payments: undefined;
+  Community: undefined;
+  Activity: undefined;
+  Profile: undefined;
 };

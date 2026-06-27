@@ -88,6 +88,16 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
+    send: (body: Record<string, unknown>) =>
+      request<QuoteResponse>("/api/payments/send", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    recurring: (body: Record<string, unknown>) =>
+      request<QuoteResponse>("/api/payments/recurring", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
     consent: (transactionId: string) =>
       request<{ interactUrl: string }>("/api/payments/consent", {
         method: "POST",
@@ -115,6 +125,8 @@ export const api = {
       request(`/api/requests/${id}/approve`, { method: "PATCH" }),
     decline: (id: string) =>
       request(`/api/requests/${id}/decline`, { method: "PATCH" }),
+    cancel: (id: string) =>
+      request(`/api/requests/${id}/cancel`, { method: "PATCH" }),
   },
 
   communities: {
@@ -142,6 +154,8 @@ export const api = {
   users: () => request<UserPublic[]>("/api/users"),
 
   history: () => request<Transaction[]>("/api/transactions/history"),
+
+  notifications: () => request<AppNotification[]>("/api/notifications"),
 };
 
 export interface User {
@@ -150,6 +164,10 @@ export interface User {
   displayName: string;
   country: string;
   currency: string;
+  accountCurrency?: string;
+  accountCountry?: string;
+  accountFlag?: string;
+  ilpWalletAddress?: string;
   walletAddress?: string;
   balance: number;
   latitude?: number;
@@ -174,8 +192,11 @@ export interface Provider {
 export interface QuoteResponse {
   transactionId: string;
   quote: {
+    sendAmount?: { value: string; assetCode: string; assetScale: number };
     debitAmount: { value: string; assetCode: string; assetScale: number };
     receiveAmount: { value: string; assetCode: string; assetScale: number };
+    fee?: { value: string; assetCode: string; assetScale: number };
+    exchangeRate?: string;
     expiresAt?: string;
   };
 }
@@ -199,6 +220,8 @@ export interface PaymentRequest {
   currency: string;
   reason?: string;
   status: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Community {
