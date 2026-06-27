@@ -1,10 +1,11 @@
-import React from "react";
-import { ActivityIndicator, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { useRef } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { NavigationContainer, NavigationContainerRef } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { usePaymentReturnHandler } from "../hooks/usePaymentReturnHandler";
 import { LoginScreen } from "../screens/LoginScreen";
 import { HomeScreen } from "../screens/HomeScreen";
 import { PaymentScreen } from "../screens/PaymentScreen";
@@ -16,6 +17,7 @@ import { PaymentStatusScreen } from "../screens/HistoryScreen";
 import { PaymentsScreen } from "../screens/PaymentsScreen";
 import { ActivityScreen } from "../screens/ActivityScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
+import { ThumelaTabBar } from "./ThumelaTabBar";
 import { MainTabParamList, RootStackParamList } from "./types";
 
 const AuthStack = createNativeStackNavigator<{ Login: undefined }>();
@@ -26,8 +28,15 @@ function LoadingScreen() {
   const { colors } = useTheme();
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
-      <ActivityIndicator size="large" color={colors.accent} />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: colors.background,
+      }}
+    >
+      <ActivityIndicator size="large" color={colors.primary} />
     </View>
   );
 }
@@ -40,92 +49,55 @@ function AuthNavigator() {
   );
 }
 
-function tabIcon(icon: string, focused: boolean, colors: ReturnType<typeof useTheme>["colors"]) {
-  return (
-    <View
-      style={{
-        width: 40,
-        height: 28,
-        borderRadius: 14,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: focused ? colors.secondary : "transparent",
-      }}
-    >
-      <Text style={{ fontSize: 18, color: focused ? colors.accent : colors.textMuted }}>{icon}</Text>
-    </View>
-  );
+function SendTabPlaceholder() {
+  const { colors } = useTheme();
+  return <View style={{ flex: 1, backgroundColor: colors.background }} />;
 }
 
 function MainTabsNavigator() {
-  const { colors } = useTheme();
-
   return (
     <Tab.Navigator
+      tabBar={(props) => <ThumelaTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: "#FFFFFF",
-          borderTopWidth: 0,
-          elevation: 12,
-          shadowColor: "#0D1F4E",
-          shadowOpacity: 0.1,
-          shadowRadius: 16,
-          shadowOffset: { width: 0, height: -4 },
-          height: 72,
-          paddingBottom: 12,
-          paddingTop: 8,
-        },
-        tabBarActiveTintColor: colors.accent,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "600",
-          letterSpacing: 0.3,
-        },
       }}
     >
-      <Tab.Screen
-        name="Home"
-        children={(props) => <HomeScreen {...(props as any)} />}
-        options={{ tabBarIcon: ({ focused }) => tabIcon("⌂", focused, colors) }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Activity" component={ActivityScreen} />
       <Tab.Screen
         name="Payments"
-        children={(props) => <PaymentsScreen {...(props as any)} />}
-        options={{ tabBarIcon: ({ focused }) => tabIcon("↗", focused, colors) }}
+        component={SendTabPlaceholder}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.getParent()?.navigate("Payment" as never);
+          },
+        })}
       />
-      <Tab.Screen
-        name="Community"
-        children={(props) => <CommunityScreen {...(props as any)} />}
-        options={{ tabBarIcon: ({ focused }) => tabIcon("◌", focused, colors) }}
-      />
-      <Tab.Screen
-        name="Activity"
-        children={(props) => <ActivityScreen {...(props as any)} />}
-        options={{ tabBarIcon: ({ focused }) => tabIcon("◷", focused, colors) }}
-      />
-      <Tab.Screen
-        name="Profile"
-        children={(props) => <ProfileScreen {...(props as any)} />}
-        options={{ tabBarIcon: ({ focused }) => tabIcon("◍", focused, colors) }}
-      />
+      <Tab.Screen name="Community" component={CommunityScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
 
 function MainNavigator() {
+  const { colors } = useTheme();
+
   return (
     <MainStack.Navigator
       initialRouteName="MainTabs"
       screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
-        contentStyle: { backgroundColor: "#F4F6FA" },
+        contentStyle: { backgroundColor: colors.background },
       }}
     >
       <MainStack.Screen name="MainTabs" component={MainTabsNavigator} />
-      <MainStack.Screen name="Payment" component={PaymentScreen} options={{ presentation: "modal" }} />
+      <MainStack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{ presentation: "modal" }}
+      />
       <MainStack.Screen name="Deposit" component={DepositScreen} />
       <MainStack.Screen name="Withdraw" component={WithdrawScreen} />
       <MainStack.Screen name="Request" component={RequestScreen} />
@@ -136,13 +108,16 @@ function MainNavigator() {
 
 export function AppNavigator() {
   const { user, loading } = useAuth();
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
+
+  usePaymentReturnHandler(navigationRef, Boolean(user));
 
   if (loading) {
     return <LoadingScreen />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {user ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );

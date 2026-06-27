@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Platform } from "react-native";
-import { Pressable, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import * as SecureStore from "expo-secure-store";
 import { useTheme } from "../context/ThemeContext";
@@ -37,13 +36,19 @@ const LANGUAGES = [
   { code: "sw", label: "SW" },
 ] as const;
 
-export function LanguagePicker() {
+interface LanguagePickerProps {
+  variant?: "dark" | "light";
+}
+
+export function LanguagePicker({ variant = "dark" }: LanguagePickerProps) {
   const { i18n } = useTranslation();
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  const isLight = variant === "light";
 
   useEffect(() => {
-    languageStorage.getItem("openremit-language")
+    languageStorage
+      .getItem("openremit-language")
       .then((stored) => {
         if (stored && stored !== i18n.language) {
           return i18n.changeLanguage(stored);
@@ -59,14 +64,22 @@ export function LanguagePicker() {
         return (
           <Pressable
             key={lang.code}
-            style={[styles.langChip, active && styles.langChipActive]}
+            style={[
+              styles.langChip,
+              isLight && styles.langChipLight,
+              active && (isLight ? styles.langChipActiveLight : styles.langChipActive),
+            ]}
             onPress={async () => {
               await i18n.changeLanguage(lang.code);
               await languageStorage.setItem("openremit-language", lang.code);
             }}
           >
             <Text
-              style={[styles.langChipText, active && styles.langChipTextActive]}
+              style={[
+                styles.langChipText,
+                isLight && styles.langChipTextLight,
+                active && styles.langChipTextActive,
+              ]}
             >
               {lang.label}
             </Text>

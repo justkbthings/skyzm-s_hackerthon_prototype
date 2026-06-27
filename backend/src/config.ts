@@ -19,6 +19,7 @@ export const config = {
   port: Number(process.env.PORT ?? 3001),
   backendUrl: process.env.BACKEND_URL ?? "http://localhost:3001",
   mobileDeepLink: process.env.MOBILE_DEEP_LINK ?? "communityremit://payment",
+  mobileWebUrl: process.env.MOBILE_WEB_URL ?? "http://localhost:8081",
 
   op: {
     walletAddress: process.env.OPEN_PAYMENTS_WALLET_ADDRESS ?? process.env.OP_WALLET_ADDRESS ?? "",

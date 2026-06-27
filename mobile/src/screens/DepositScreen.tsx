@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { LanguagePicker } from "../components/LanguagePicker";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { createStyles } from "../theme/styles";
 import { api, Provider } from "../services/api";
 import { RootStackParamList } from "../navigation/types";
@@ -58,11 +58,7 @@ export function DepositScreen({ navigation }: Props) {
 
   return (
     <ScrollView style={styles.screen}>
-      <View style={styles.header}>
-        <LanguagePicker />
-        <Text style={styles.headerTitle}>{t("deposit.title")}</Text>
-        <Text style={styles.headerSubtitle}>{t("deposit.subtitle")}</Text>
-      </View>
+      <ScreenHeader title={t("deposit.title")} subtitle={t("deposit.subtitle")} />
 
       <View style={styles.content}>
         <View style={styles.card}>

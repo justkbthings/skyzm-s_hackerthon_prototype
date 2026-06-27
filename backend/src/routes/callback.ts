@@ -1,9 +1,24 @@
 import { Router } from "express";
 import { store } from "../store";
 import { getClient, isFinalizedGrant } from "../lib/openPayments";
-import { config } from "../config";
+import { sendPaymentCallbackRedirect } from "../lib/paymentCallbackRedirect";
 
 export const callbackRouter = Router();
+
+function redirectAfterCallback(
+  res: Parameters<typeof sendPaymentCallbackRedirect>[0],
+  tx: { returnPlatform?: "web" | "native" },
+  transactionId: string,
+  status: "completed" | "failed",
+  reason?: string
+) {
+  sendPaymentCallbackRedirect(res, {
+    transactionId,
+    status,
+    returnPlatform: tx.returnPlatform,
+    reason,
+  });
+}
 
 // GNAP callback — adapted from OpenRemit
 callbackRouter.get("/", async (req, res) => {
@@ -14,10 +29,26 @@ callbackRouter.get("/", async (req, res) => {
   }
 
   const tx = await store.transactions.get(transactionId);
-  const redirectBase = `${config.mobileDeepLink}?id=${transactionId}`;
 
-  if (!tx || tx.status !== "AWAITING_GRANT") {
-    return res.redirect(`${redirectBase}&status=failed&reason=invalid_state`);
+  if (!tx) {
+    return sendPaymentCallbackRedirect(res, {
+      transactionId,
+      status: "failed",
+      returnPlatform: "web",
+      reason: "not_found",
+    });
+  }
+
+  if (tx.status === "COMPLETED") {
+    return redirectAfterCallback(res, tx, transactionId, "completed");
+  }
+
+  if (tx.status === "FAILED") {
+    return redirectAfterCallback(res, tx, transactionId, "failed");
+  }
+
+  if (tx.status !== "AWAITING_GRANT") {
+    return redirectAfterCallback(res, tx, transactionId, "failed", "invalid_state");
   }
 
   if (!interact_ref || result === "grant_rejected") {
@@ -29,7 +60,7 @@ callbackRouter.get("/", async (req, res) => {
           : "Authorisation incomplete",
       updatedAt: new Date().toISOString(),
     });
-    return res.redirect(`${redirectBase}&status=failed`);
+    return redirectAfterCallback(res, tx, transactionId, "failed");
   }
 
   try {
@@ -98,7 +129,7 @@ callbackRouter.get("/", async (req, res) => {
       }
     }
 
-    res.redirect(`${redirectBase}&status=completed`);
+    redirectAfterCallback(res, tx, transactionId, "completed");
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     await store.transactions.update(transactionId, {
@@ -106,6 +137,6 @@ callbackRouter.get("/", async (req, res) => {
       errorMessage: message,
       updatedAt: new Date().toISOString(),
     });
-    res.redirect(`${redirectBase}&status=failed`);
+    redirectAfterCallback(res, tx, transactionId, "failed");
   }
 });

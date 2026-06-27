@@ -11,7 +11,8 @@
     "selectProvider": "Chagua benki au mtoa huduma",
     "loading": "Inapakia...",
     "success": "Imefanikiwa",
-    "error": "Kuna tatizo limetokea"
+    "error": "Kuna tatizo limetokea",
+    "home": "Nyumbani"
   },
   "home": {
     "greeting": "Habari, {{name}}",
@@ -38,7 +39,10 @@
     "youSend": "Unatuma",
     "theyReceive": "Wanapokea",
     "authorize": "Idhinisha malipo",
-    "whatsapp": "Tuma kupitia WhatsApp"
+    "whatsapp": "Tuma kupitia WhatsApp",
+    "statusComplete": "Malipo yamekamilika",
+    "statusFailed": "Malipo yameshindwa",
+    "statusTitle": "Hali ya malipo"
   },
   "deposit": {
     "title": "Weka pesa",

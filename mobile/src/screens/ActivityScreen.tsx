@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
 import { createStyles } from "../theme/styles";
 import { api, PaymentRequest, Transaction, User } from "../services/api";
-import { RootStackParamList } from "../navigation/types";
+import { MainTabParamList } from "../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Activity">;
+type Props = BottomTabScreenProps<MainTabParamList, "Activity">;
 
 function statusLabel(status: string): string {
   return status.toLowerCase();

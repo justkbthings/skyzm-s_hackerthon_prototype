@@ -58,6 +58,7 @@ export interface Transaction {
   paymentRequestId?: string;
   description?: string;
   errorMessage?: string;
+  returnPlatform?: "web" | "native";
   createdAt: string;
   updatedAt: string;
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Alert,
+  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -8,15 +9,15 @@ import {
   View,
 } from "react-native";
 import { useTranslation } from "react-i18next";
-import * as WebBrowser from "expo-web-browser";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { LanguagePicker } from "../components/LanguagePicker";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { CurrencyPicker, ILP_SUPPORTED_CURRENCIES } from "../components/CurrencyPicker";
 import { createStyles } from "../theme/styles";
 import { api, Beneficiary, formatMoney } from "../services/api";
 import { RootStackParamList } from "../navigation/types";
+import { openAuthorizationUrl } from "../utils/openAuthorizationUrl";
 
 type CurrencyCode = (typeof ILP_SUPPORTED_CURRENCIES)[number]["code"];
 
@@ -101,19 +102,22 @@ export function PaymentScreen({ navigation, route }: Props) {
 
   const authorize = async () => {
     if (!transactionId) return;
+
+    let authWindow: Window | null = null;
+    if (Platform.OS === "web" && typeof window !== "undefined") {
+      authWindow = window.open("about:blank", "_blank");
+    }
+
     try {
-      const { interactUrl } = await api.payments.consent(transactionId);
-      const redirectUri = "communityremit://payment";
-      const result = await WebBrowser.openAuthSessionAsync(interactUrl, redirectUri);
-      if (result.type === "success") {
-        navigation.navigate("PaymentStatus", { transactionId });
-        return;
-      }
-      if (result.type === "cancel") {
-        return;
-      }
+      setError("");
+      const { interactUrl } = await api.payments.consent(
+        transactionId,
+        Platform.OS === "web" ? "web" : "native"
+      );
+      await openAuthorizationUrl(interactUrl, authWindow);
       navigation.navigate("PaymentStatus", { transactionId });
     } catch (e) {
+      authWindow?.close();
       setError(e instanceof Error ? e.message : t("common.error"));
     }
   };
@@ -135,13 +139,10 @@ export function PaymentScreen({ navigation, route }: Props) {
 
   return (
     <ScrollView style={styles.screen}>
-      <View style={styles.header}>
-        <LanguagePicker />
-        <Text style={styles.headerTitle}>{t("payment.title")}</Text>
-        <Text style={styles.headerSubtitle}>
-          You are sending from your {user?.accountCurrency ?? user?.currency ?? "ZAR"} wallet.
-        </Text>
-      </View>
+      <ScreenHeader
+        title={t("payment.title")}
+        subtitle={`You are sending from your ${user?.accountCurrency ?? user?.currency ?? "ZAR"} wallet.`}
+      />
 
       <View style={styles.content}>
         {error ? <Text style={styles.errorText}>{error}</Text> : null}

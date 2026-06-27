@@ -7,7 +7,7 @@
     "scheme": "communityremit",
     "userInterfaceStyle": "light",
     "splash": {
-      "backgroundColor": "#004B49"
+      "backgroundColor": "#F6F8FB"
     },
     "ios": {
       "supportsTablet": true,
@@ -15,7 +15,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#004B49"
+        "backgroundColor": "#F6F8FB"
       },
       "package": "com.communityremit.app"
     }

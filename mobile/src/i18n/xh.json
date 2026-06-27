@@ -11,7 +11,8 @@
     "selectProvider": "Khetha ibhanki okanye umnikezeli",
     "loading": "Iyalayisha...",
     "success": "Impumelelo",
-    "error": "Kukho into engahambanga kakuhle"
+    "error": "Kukho into engahambanga kakuhle",
+    "home": "Ekhaya"
   },
   "home": {
     "greeting": "Molo, {{name}}",
@@ -38,7 +39,10 @@
     "youSend": "Uthumela",
     "theyReceive": "Bayifumana",
     "authorize": "Gunyazisa intlawulo",
-    "whatsapp": "Thumela nge-WhatsApp"
+    "whatsapp": "Thumela nge-WhatsApp",
+    "statusComplete": "Intlawulo igqityiwe ngempumelelo",
+    "statusFailed": "Intlawulo ayiphumelelanga",
+    "statusTitle": "Imo yentlawulo"
   },
   "deposit": {
     "title": "Faka imali",

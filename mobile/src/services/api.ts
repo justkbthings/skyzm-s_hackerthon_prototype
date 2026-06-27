@@ -98,10 +98,10 @@ export const api = {
         method: "POST",
         body: JSON.stringify(body),
       }),
-    consent: (transactionId: string) =>
+    consent: (transactionId: string, returnPlatform?: "web" | "native") =>
       request<{ interactUrl: string }>("/api/payments/consent", {
         method: "POST",
-        body: JSON.stringify({ transactionId }),
+        body: JSON.stringify({ transactionId, returnPlatform }),
       }),
     status: (id: string) => request<Transaction>(`/api/payments/status/${id}`),
     whatsapp: (body: Record<string, unknown>) =>
@@ -209,8 +209,17 @@ export interface Transaction {
   debitAmount?: string;
   receiveAmount?: string;
   assetCode: string;
+  assetScale?: number;
+  receiveAssetCode?: string;
+  receiveAssetScale?: number;
   description?: string;
   createdAt: string;
+  updatedAt?: string;
+  senderWalletAddress?: string;
+  receiverWalletAddress?: string;
+  beneficiaryId?: string;
+  beneficiaryName?: string;
+  errorMessage?: string;
 }
 
 export interface PaymentRequest {

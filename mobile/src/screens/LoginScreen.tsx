@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { ScrollView, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
+import { ThumelaWordmark } from "../components/ThumelaWordmark";
+import { ThumelaButton } from "../components/ThumelaButton";
+import { ThumelaCard } from "../components/ThumelaCard";
+import { BrandDots } from "../components/BrandDots";
 import { createStyles } from "../theme/styles";
 
 export function LoginScreen() {
@@ -27,15 +31,17 @@ export function LoginScreen() {
   return (
     <ScrollView
       testID="login-screen"
-      contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24 }}
+      contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 24, maxWidth: 480, alignSelf: "center", width: "100%" }}
       style={styles.screen}
     >
-      <LanguagePicker />
-      <View style={styles.card}>
-        <Text style={[styles.headerTitle, { color: colors.primary, marginBottom: 8 }]}>
-          {t("common.appName")}
-        </Text>
-        <Text style={{ color: colors.textMuted, marginBottom: 20 }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+        <ThumelaWordmark size="lg" />
+        <LanguagePicker variant="light" />
+      </View>
+
+      <ThumelaCard accent="purple" showDots>
+        <BrandDots size={5} gap={4} style={{ marginBottom: 12 }} />
+        <Text style={{ color: colors.textMuted, marginBottom: 20, fontSize: 14 }}>
           Cross-border remittance powered by Interledger
         </Text>
 
@@ -62,12 +68,10 @@ export function LoginScreen() {
           secureTextEntry
         />
 
-        <Pressable testID="login-submit" style={styles.primaryButton} onPress={onLogin}>
-          <Text style={styles.primaryButtonText}>{t("auth.login")}</Text>
-        </Pressable>
-      </View>
+        <ThumelaButton testID="login-submit" label={t("auth.login")} onPress={onLogin} />
+      </ThumelaCard>
 
-      <Text style={{ color: colors.textMuted, marginTop: 12, textAlign: "center" }}>
+      <Text style={{ color: colors.textMuted, marginTop: 16, textAlign: "center", fontSize: 13 }}>
         Demo login: nomzamo@example.com / password123
       </Text>
     </ScrollView>

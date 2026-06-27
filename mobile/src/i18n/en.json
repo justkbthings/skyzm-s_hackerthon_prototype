@@ -11,7 +11,8 @@
     "selectProvider": "Select bank or provider",
     "loading": "Loading...",
     "success": "Success",
-    "error": "Something went wrong"
+    "error": "Something went wrong",
+    "home": "Home"
   },
   "home": {
     "greeting": "Hello, {{name}}",
@@ -38,7 +39,10 @@
     "youSend": "You send",
     "theyReceive": "They receive",
     "authorize": "Authorize payment",
-    "whatsapp": "Send via WhatsApp"
+    "whatsapp": "Send via WhatsApp",
+    "statusComplete": "Payment completed successfully",
+    "statusFailed": "Payment failed",
+    "statusTitle": "Payment status"
   },
   "deposit": {
     "title": "Deposit",

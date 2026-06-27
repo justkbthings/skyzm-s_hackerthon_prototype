@@ -318,10 +318,15 @@ paymentsRouter.get("/requests/:userId", requireAuth, async (req, res, next) => {
 
 paymentsRouter.post("/consent", requireAuth, async (req: AuthRequest, res, next) => {
   try {
-    const { transactionId } = req.body;
+    const { transactionId, returnPlatform } = req.body;
     if (!transactionId) {
       return res.status(400).json({ error: "transactionId required" });
     }
+
+    const platform =
+      returnPlatform === "web" || returnPlatform === "native"
+        ? returnPlatform
+        : undefined;
 
     const tx = await store.transactions.get(transactionId);
     if (!tx || tx.userId !== req.user!.id) {
@@ -384,6 +389,7 @@ paymentsRouter.post("/consent", requireAuth, async (req: AuthRequest, res, next)
       grantContinueUri: outgoingGrant.continue.uri,
       grantContinueToken: outgoingGrant.continue.access_token.value,
       grantInteractNonce: nonce,
+      returnPlatform: platform,
       updatedAt: new Date().toISOString(),
     });
 

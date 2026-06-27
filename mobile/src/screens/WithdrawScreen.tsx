@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { LanguagePicker } from "../components/LanguagePicker";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { createStyles } from "../theme/styles";
 import { api, Provider } from "../services/api";
 
@@ -32,11 +32,7 @@ export function WithdrawScreen() {
 
   return (
     <ScrollView style={styles.screen}>
-      <View style={styles.header}>
-        <LanguagePicker />
-        <Text style={styles.headerTitle}>{t("withdraw.title")}</Text>
-        <Text style={styles.headerSubtitle}>{t("withdraw.subtitle")}</Text>
-      </View>
+      <ScreenHeader title={t("withdraw.title")} subtitle={t("withdraw.subtitle")} />
 
       <View style={styles.content}>
         <View style={styles.card}>

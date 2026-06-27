@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, Text, TextInput, View } from "react-nativ
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { LanguagePicker } from "../components/LanguagePicker";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { createStyles } from "../theme/styles";
 import { api, PaymentRequest, UserPublic } from "../services/api";
 
@@ -39,11 +39,7 @@ export function RequestScreen() {
 
   return (
     <ScrollView style={styles.screen}>
-      <View style={styles.header}>
-        <LanguagePicker />
-        <Text style={styles.headerTitle}>{t("request.title")}</Text>
-        <Text style={styles.headerSubtitle}>{t("request.subtitle")}</Text>
-      </View>
+      <ScreenHeader title={t("request.title")} subtitle={t("request.subtitle")} />
 
       <View style={styles.content}>
         <View style={styles.card}>

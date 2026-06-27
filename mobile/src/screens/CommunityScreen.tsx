@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { LanguagePicker } from "../components/LanguagePicker";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { CommunityNetworkMap } from "../components/CommunityNetworkMap";
 import { CurrencyPicker, ILP_SUPPORTED_CURRENCIES } from "../components/CurrencyPicker";
 import { createStyles } from "../theme/styles";
@@ -78,11 +78,11 @@ export function CommunityScreen() {
 
   return (
     <ScrollView testID="community-screen" style={styles.screen}>
-      <View style={styles.header}>
-        <LanguagePicker />
-        <Text style={styles.headerTitle}>{t("community.title")}</Text>
-        <Text style={styles.headerSubtitle}>Network view and group requests</Text>
-      </View>
+      <ScreenHeader
+        title={t("community.title")}
+        subtitle="Network view and group requests"
+        showHome={false}
+      />
 
       <View style={styles.content}>
         {!selected ? (
