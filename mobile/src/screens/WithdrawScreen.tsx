@@ -12,6 +12,8 @@ export function WithdrawScreen() {
   const { user } = useAuth();
   const { colors } = useTheme();
   const styles = createStyles(colors);
+  const accountCountry = user?.accountCountry ?? user?.country ?? "South Africa";
+  const accountCurrency = user?.accountCurrency ?? user?.currency ?? "ZAR";
 
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
@@ -37,6 +39,12 @@ export function WithdrawScreen() {
       </View>
 
       <View style={styles.content}>
+        <View style={styles.card}>
+          <Text style={styles.label}>{t("common.selectCountry")}</Text>
+          <Text style={styles.listItemTitle}>{accountCountry}</Text>
+          <Text style={styles.listItemSubtitle}>Wallet currency: {accountCurrency}</Text>
+        </View>
+
         {providers.map((p) => (
           <Pressable
             key={p.id}

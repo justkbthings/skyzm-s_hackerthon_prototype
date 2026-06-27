@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
 import { createStyles } from "../theme/styles";
@@ -8,6 +9,7 @@ import { api, PaymentRequest, UserPublic } from "../services/api";
 
 export function RequestScreen() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
@@ -27,7 +29,7 @@ export function RequestScreen() {
     await api.requests.create({
       payerId,
       amount: Number(amount),
-      currency: "ZAR",
+      currency: user?.accountCurrency ?? user?.currency ?? "ZAR",
       reason,
     });
     Alert.alert(t("common.success"), t("request.sendRequest"));

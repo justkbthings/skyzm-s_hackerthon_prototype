@@ -18,7 +18,7 @@ beneficiariesRouter.get("/", requireAuth, async (req: AuthRequest, res, next) =>
 
 beneficiariesRouter.post("/", requireAuth, async (req: AuthRequest, res, next) => {
   try {
-    const { name, walletAddress, country } = req.body;
+    const { name, walletAddress, country, currency } = req.body;
 
     if (!name || !walletAddress) {
       return res.status(400).json({ error: "name and walletAddress required" });
@@ -30,6 +30,7 @@ beneficiariesRouter.post("/", requireAuth, async (req: AuthRequest, res, next) =
       name,
       walletAddress: normaliseWalletAddress(walletAddress),
       country,
+      currency,
       createdAt: new Date().toISOString(),
     };
 

@@ -157,10 +157,11 @@ communitiesRouter.post(
 
       const { title, targetAmount, currency, expiryDate } = req.body;
       const amount = Number(targetAmount);
+      const requestCurrency = currency ?? req.user!.accountCurrency ?? req.user!.currency ?? "ZAR";
 
-      if (!title || !amount || amount <= 0 || !currency || !expiryDate) {
+      if (!title || !amount || amount <= 0 || !expiryDate) {
         return res.status(400).json({
-          error: "title, targetAmount, currency, expiryDate required",
+          error: "title, targetAmount, expiryDate required",
         });
       }
 
@@ -171,7 +172,7 @@ communitiesRouter.post(
         creatorId: req.user!.id,
         title,
         targetAmount: amount,
-        currency,
+        currency: requestCurrency,
         raisedAmount: 0,
         expiryDate,
         status: "OPEN" as const,
@@ -187,7 +188,7 @@ communitiesRouter.post(
         await createNotification({
           userId: memberId,
           title: "New community request",
-          body: `${req.user!.displayName} needs ${currency} ${amount} for ${title}`,
+          body: `${req.user!.displayName} needs ${requestCurrency} ${amount} for ${title}`,
           type: "community",
           referenceId: request.id,
         });

@@ -72,6 +72,14 @@ requestsRouter.patch("/:id/approve", requireAuth, async (req: AuthRequest, res, 
       updatedAt: new Date().toISOString(),
     });
 
+    await createNotification({
+      userId: request.requesterId,
+      title: "Payment request approved",
+      body: `${req.user!.displayName} approved your ${request.currency} ${request.amount} request`,
+      type: "payment_request",
+      referenceId: request.id,
+    });
+
     res.json(updated);
   } catch (err) {
     next(err);
@@ -90,6 +98,14 @@ requestsRouter.patch("/:id/decline", requireAuth, async (req: AuthRequest, res, 
       updatedAt: new Date().toISOString(),
     });
 
+    await createNotification({
+      userId: request.requesterId,
+      title: "Payment request declined",
+      body: `${req.user!.displayName} declined your ${request.currency} ${request.amount} request`,
+      type: "payment_request",
+      referenceId: request.id,
+    });
+
     res.json(updated);
   } catch (err) {
     next(err);
@@ -106,6 +122,14 @@ requestsRouter.patch("/:id/cancel", requireAuth, async (req: AuthRequest, res, n
     const updated = await store.paymentRequests.update(request.id, {
       status: "CANCELLED",
       updatedAt: new Date().toISOString(),
+    });
+
+    await createNotification({
+      userId: request.payerId,
+      title: "Payment request cancelled",
+      body: `${req.user!.displayName} cancelled a ${request.currency} ${request.amount} request`,
+      type: "payment_request",
+      referenceId: request.id,
     });
 
     res.json(updated);

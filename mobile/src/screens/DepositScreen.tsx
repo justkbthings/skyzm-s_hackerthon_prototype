@@ -19,6 +19,8 @@ export function DepositScreen({ navigation }: Props) {
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
+  const accountCountry = user?.accountCountry ?? user?.country ?? "South Africa";
+  const accountCurrency = user?.accountCurrency ?? user?.currency ?? "ZAR";
   const [country, setCountry] = useState(user?.country ?? "ZA");
   const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
@@ -63,15 +65,11 @@ export function DepositScreen({ navigation }: Props) {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.label}>{t("common.selectCountry")}</Text>
-        {COUNTRIES.map((c) => (
-          <Pressable key={c} style={styles.listItem} onPress={() => setCountry(c)}>
-            <Text style={styles.listItemTitle}>
-              {country === c ? "● " : "○ "}
-              {t(`countries.${c}`)}
-            </Text>
-          </Pressable>
-        ))}
+        <View style={styles.card}>
+          <Text style={styles.label}>{t("common.selectCountry")}</Text>
+          <Text style={styles.listItemTitle}>{accountCountry}</Text>
+          <Text style={styles.listItemSubtitle}>Wallet currency: {accountCurrency}</Text>
+        </View>
 
         <Text style={[styles.label, { marginTop: 12 }]}>
           {t("common.selectProvider")}

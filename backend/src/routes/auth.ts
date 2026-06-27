@@ -8,6 +8,33 @@ import { store } from "../store";
 
 export const authRouter = Router();
 
+function accountMetadata(country?: string, currency?: string) {
+  const normalizedCountry = country ?? "South Africa";
+  const normalizedCurrency = currency ?? (normalizedCountry === "Kenya" ? "KES" : "ZAR");
+  const flag =
+    normalizedCountry === "Kenya"
+      ? "🇰🇪"
+      : normalizedCountry === "England"
+        ? "🇬🇧"
+        : normalizedCountry === "USA"
+          ? "🇺🇸"
+          : "🇿🇦";
+
+  return {
+    accountCurrency: normalizedCurrency,
+    accountCountry: normalizedCountry,
+    accountFlag: flag,
+  };
+}
+
+function safeUser(user: Record<string, any>) {
+  const { passwordHash: _, ...rest } = user;
+  return {
+    ...rest,
+    ...accountMetadata(user.accountCountry ?? user.country, user.accountCurrency ?? user.currency),
+  };
+}
+
 async function registerUser(req: any, res: any, next: any) {
   try {
     const { email, password, displayName, country, currency, phone, walletAddress } =
@@ -29,6 +56,7 @@ async function registerUser(req: any, res: any, next: any) {
       phone,
       country,
       currency: currency ?? "ZAR",
+      ...accountMetadata(country, currency),
       walletAddress,
       balance: 0,
       createdAt: now,
@@ -41,8 +69,7 @@ async function registerUser(req: any, res: any, next: any) {
       expiresIn: "7d",
     });
 
-    const { passwordHash: _, ...safe } = user;
-    res.status(201).json({ token, user: safe });
+    res.status(201).json({ token, user: safeUser(user) });
   } catch (err) {
     next(err);
   }
@@ -65,16 +92,14 @@ authRouter.post("/login", async (req, res, next) => {
       expiresIn: "7d",
     });
 
-    const { passwordHash: _, ...safe } = user;
-    res.json({ token, user: safe });
+    res.json({ token, user: safeUser(user) });
   } catch (err) {
     next(err);
   }
 });
 
 authRouter.get("/me", requireAuth, (req: AuthRequest, res) => {
-  const { passwordHash: _, ...safe } = req.user!;
-  res.json(safe);
+  res.json(safeUser(req.user!));
 });
 
 authRouter.patch("/me", requireAuth, async (req: AuthRequest, res, next) => {
@@ -89,6 +114,9 @@ authRouter.patch("/me", requireAuth, async (req: AuthRequest, res, next) => {
       fcmToken: fcmToken ?? req.user!.fcmToken,
       latitude: latitude ?? req.user!.latitude,
       longitude: longitude ?? req.user!.longitude,
+      accountCurrency: req.user!.accountCurrency ?? req.user!.currency ?? "ZAR",
+      accountCountry: req.user!.accountCountry ?? req.user!.country,
+      accountFlag: req.user!.accountFlag ?? accountMetadata(req.user!.country, req.user!.currency).accountFlag,
       updatedAt: new Date().toISOString(),
     });
 

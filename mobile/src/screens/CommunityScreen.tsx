@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
 import { CommunityNetworkMap } from "../components/CommunityNetworkMap";
+import { CurrencyPicker, ILP_SUPPORTED_CURRENCIES } from "../components/CurrencyPicker";
 import { createStyles } from "../theme/styles";
 import { api, Community, CommunityRequest, UserPublic } from "../services/api";
 
 export function CommunityScreen() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const { colors } = useTheme();
   const styles = createStyles(colors);
 
@@ -22,6 +25,8 @@ export function CommunityScreen() {
   const [requestTitle, setRequestTitle] = useState("");
   const [targetAmount, setTargetAmount] = useState("");
   const [expiryDate, setExpiryDate] = useState("2026-12-31");
+  const [requestCurrency, setRequestCurrency] = useState(user?.accountCurrency ?? user?.currency ?? "ZAR");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [createMessage, setCreateMessage] = useState("");
 
   const load = () => api.communities.list().then(setCommunities);
@@ -63,7 +68,7 @@ export function CommunityScreen() {
     await api.communities.createRequest(selected.id, {
       title: requestTitle,
       targetAmount: Number(targetAmount),
-      currency: "USD",
+      currency: requestCurrency,
       expiryDate,
     });
     selectCommunity(selected);
@@ -154,6 +159,12 @@ export function CommunityScreen() {
               <Text style={styles.label}>{t("community.newRequest")}</Text>
               <TextInput testID="community-request-title" style={styles.input} placeholder={t("community.requestTitle")} value={requestTitle} onChangeText={setRequestTitle} />
               <TextInput testID="community-request-amount" style={styles.input} placeholder={t("community.targetAmount")} value={targetAmount} onChangeText={setTargetAmount} keyboardType="decimal-pad" />
+                <Pressable style={styles.listItem} onPress={() => setPickerOpen(true)}>
+                  <View>
+                    <Text style={styles.listItemTitle}>Request currency</Text>
+                    <Text style={styles.listItemSubtitle}>{requestCurrency}</Text>
+                  </View>
+                </Pressable>
               <TextInput style={styles.input} placeholder={t("community.expiry")} value={expiryDate} onChangeText={setExpiryDate} />
               <Pressable testID="community-request-submit" style={styles.primaryButton} onPress={createRequest}>
                 <Text style={styles.primaryButtonText}>{t("community.newRequest")}</Text>
@@ -175,6 +186,14 @@ export function CommunityScreen() {
           </>
         )}
       </View>
+
+      <CurrencyPicker
+        visible={pickerOpen}
+        value={requestCurrency as (typeof ILP_SUPPORTED_CURRENCIES)[number]["code"]}
+        onSelect={(currency) => setRequestCurrency(currency)}
+        onClose={() => setPickerOpen(false)}
+        title="Choose request currency"
+      />
     </ScrollView>
   );
 }

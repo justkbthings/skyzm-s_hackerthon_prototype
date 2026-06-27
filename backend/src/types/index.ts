@@ -8,6 +8,10 @@ export interface User {
   phone?: string;
   country: string;
   currency: string;
+  accountCurrency?: string;
+  accountCountry?: string;
+  accountFlag?: string;
+  ilpWalletAddress?: string;
   walletAddress?: string;
   avatarUrl?: string;
   latitude?: number;
@@ -71,6 +75,7 @@ export interface Beneficiary {
   name: string;
   walletAddress: string;
   country?: string;
+  currency?: string;
   createdAt: string;
 }
 

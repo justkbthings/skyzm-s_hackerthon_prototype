@@ -73,10 +73,10 @@ export const api = {
 
   beneficiaries: {
     list: () => request<Beneficiary[]>("/api/beneficiaries"),
-    create: (name: string, walletAddress: string, country?: string) =>
+    create: (name: string, walletAddress: string, country?: string, currency?: string) =>
       request<Beneficiary>("/api/beneficiaries", {
         method: "POST",
-        body: JSON.stringify({ name, walletAddress, country }),
+        body: JSON.stringify({ name, walletAddress, country, currency }),
       }),
     discover: (url: string) =>
       request(`/api/beneficiaries/discover?url=${encodeURIComponent(url)}`),
@@ -181,6 +181,7 @@ export interface Beneficiary {
   name: string;
   walletAddress: string;
   country?: string;
+  currency?: string;
 }
 
 export interface Provider {

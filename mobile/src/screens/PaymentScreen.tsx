@@ -13,9 +13,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LanguagePicker } from "../components/LanguagePicker";
+import { CurrencyPicker, ILP_SUPPORTED_CURRENCIES } from "../components/CurrencyPicker";
 import { createStyles } from "../theme/styles";
 import { api, Beneficiary, formatMoney } from "../services/api";
 import { RootStackParamList } from "../navigation/types";
+
+type CurrencyCode = (typeof ILP_SUPPORTED_CURRENCIES)[number]["code"];
 
 type Props = NativeStackScreenProps<RootStackParamList, "Payment">;
 
@@ -37,6 +40,8 @@ export function PaymentScreen({ navigation, route }: Props) {
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [newName, setNewName] = useState("");
   const [newWallet, setNewWallet] = useState("");
+  const [newCurrency, setNewCurrency] = useState<CurrencyCode>("ZAR");
+  const [currencyPickerOpen, setCurrencyPickerOpen] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -61,10 +66,11 @@ export function PaymentScreen({ navigation, route }: Props) {
 
   const addBeneficiary = async () => {
     try {
-      const b = await api.beneficiaries.create(newName, newWallet);
+      const b = await api.beneficiaries.create(newName, newWallet, undefined, newCurrency);
       setBeneficiaries((prev) => [...prev, b]);
       setNewName("");
       setNewWallet("");
+      setNewCurrency((user?.accountCurrency ?? user?.currency ?? "ZAR") as CurrencyCode);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("common.error"));
     }
@@ -97,7 +103,15 @@ export function PaymentScreen({ navigation, route }: Props) {
     if (!transactionId) return;
     try {
       const { interactUrl } = await api.payments.consent(transactionId);
-      await WebBrowser.openBrowserAsync(interactUrl);
+      const redirectUri = "communityremit://payment";
+      const result = await WebBrowser.openAuthSessionAsync(interactUrl, redirectUri);
+      if (result.type === "success") {
+        navigation.navigate("PaymentStatus", { transactionId });
+        return;
+      }
+      if (result.type === "cancel") {
+        return;
+      }
       navigation.navigate("PaymentStatus", { transactionId });
     } catch (e) {
       setError(e instanceof Error ? e.message : t("common.error"));
@@ -167,6 +181,12 @@ export function PaymentScreen({ navigation, route }: Props) {
               onChangeText={setNewWallet}
               autoCapitalize="none"
             />
+            <Pressable style={styles.listItem} onPress={() => setCurrencyPickerOpen(true)}>
+              <View>
+                <Text style={styles.listItemTitle}>Beneficiary currency</Text>
+                <Text style={styles.listItemSubtitle}>{newCurrency}</Text>
+              </View>
+            </Pressable>
             <Pressable style={styles.secondaryButton} onPress={addBeneficiary}>
               <Text style={styles.secondaryButtonText}>{t("payment.addBeneficiary")}</Text>
             </Pressable>
@@ -242,6 +262,14 @@ export function PaymentScreen({ navigation, route }: Props) {
           </View>
         )}
       </View>
+
+      <CurrencyPicker
+        visible={currencyPickerOpen}
+        value={newCurrency}
+        onSelect={(currency) => setNewCurrency(currency)}
+        onClose={() => setCurrencyPickerOpen(false)}
+        title="Choose beneficiary currency"
+      />
     </ScrollView>
   );
 }

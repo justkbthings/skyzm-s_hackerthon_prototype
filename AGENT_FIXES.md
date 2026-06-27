@@ -18,3 +18,9 @@
 - Verified the live preview: Home, Payments, Activity, Profile, and the send modal all render correctly.
 - Made the Deposit screen auto-close back to the main shell after a successful deposit.
 - Fixed web-safe language persistence so the preview no longer crashes when switching languages.
+- Enriched auth responses with account currency, account country, account flag, and ILP wallet metadata.
+- Defaulted payment, request, deposit, withdraw, and community flows to the user’s account currency/country.
+- Added a searchable currency picker for beneficiary and community request creation.
+- Wired payment consent to an auth-session redirect flow using the configured custom scheme.
+- Added request notifications for approve, decline, and cancel actions.
+- Added a service-level Open Payments compatibility wrapper at backend/src/services/openPayments.js.
